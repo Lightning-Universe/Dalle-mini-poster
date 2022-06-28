@@ -51,6 +51,8 @@ jax.local_device_count()
 
 model, params, vqgan, vqgan_params = [None] * 4
 
+from functools import partial
+
 # Load models & tokenizer
 from dalle_mini import DalleBart
 from vqgan_jax.modeling_flax_vqgan import VQModel
@@ -60,7 +62,6 @@ from vqgan_jax.modeling_flax_vqgan import VQModel
 # In[5]:
 
 
-from functools import partial
 
 
 # model inference
@@ -89,7 +90,7 @@ def p_decode(indices, params):
 
 
 # create a random key
-SEED = random.randint(0, 2 ** 32 - 1)
+SEED = random.randint(0, 2**32 - 1)
 KEY = jax.random.PRNGKey(SEED)
 
 # ## 🖍 Text Prompt
@@ -105,8 +106,8 @@ processor = DalleBartProcessor.from_pretrained(DALLE_MODEL, revision=DALLE_COMMI
 
 # Let's define some text prompts.
 
-from flax.training.common_utils import shard_prng_key
 import numpy as np
+from flax.training.common_utils import shard_prng_key
 from PIL import Image
 from tqdm.notebook import trange
 
@@ -123,8 +124,9 @@ class DalleMini:
 
         if model is None:
             # Load dalle-mini
-            model, params = DalleBart.from_pretrained(DALLE_MODEL, revision=DALLE_COMMIT_ID, dtype=jnp.float16,
-                _do_init=False)
+            model, params = DalleBart.from_pretrained(
+                DALLE_MODEL, revision=DALLE_COMMIT_ID, dtype=jnp.float16, _do_init=False
+            )
 
             # Load VQGAN
             vqgan, vqgan_params = VQModel.from_pretrained(VQGAN_REPO, revision=VQGAN_COMMIT_ID, _do_init=False)
