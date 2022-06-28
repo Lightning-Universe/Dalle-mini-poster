@@ -5,7 +5,7 @@ rich==12.4.1
 torch==1.11.0
 torchvision==0.12.0
 gradio==2.9.4
-git+https://github.com/patil-suraj/vqgan-jax.git
+vqgan-jax@ git+https://github.com/patil-suraj/vqgan-jax.git
 dalle-mini==0.1.1
 streamlit==1.9.0
 streamlit-autorefresh==0.0.1
