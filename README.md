@@ -1,4 +1,4 @@
-# 🥑 Dalle-Mini Poster App ⚡️ 
+# 🥑 Dalle-Mini Poster App ⚡️
 
 Use this app to share your research paper results. This app lets you connect a blogpost, arxiv paper, and a jupyter
 notebook and even have an interactive demo for people to play with the model. This app also allows industry
@@ -14,7 +14,7 @@ manually install the app as mentioned below.
 
 #### With Lightning CLI
 
-`lightning install app lightning/research_poster`
+`lightning install app lightning/dalle_mini`
 
 #### Use GitHub template
 
@@ -26,14 +26,14 @@ your account.
 You can clone the forked app repo and follow the steps below to install the app.
 
 ```
-git clone https://github.com/YOUR-USERNAME/lightning-template-research-app.git
-cd lightning-template-research-app
+git clone https://github.com/YOUR-USERNAME/LAI-dalle-mini-poster-App.git
+cd LAI-dalle-mini-poster-App
 pip install -r requirements.txt
 pip install -e .
 ```
 
-Once you have installed the app, you can goto the `lightning-template-research-app` folder and
-run `lightning run app app.py --cloud` from terminal.
+Once you have installed the app, you can goto the `LAI-dalle-mini-poster-App` folder and
+run `lightning run app app.py --cloud --env WANDB_API_KEY={REPLACE YOUR API KEY}` from terminal.
 This will launch the template app in your default browser with tabs containing research paper, blog, Training
 logs, and Model Demo.
 
@@ -63,25 +63,24 @@ each of the arguments does in the docstrings.
 # update app.py at the root of the repo
 import lightning as L
 
-paper = "https://arxiv.org/pdf/2103.00020.pdf"
-blog = "https://openai.com/blog/clip/"
-github = "https://github.com/mlfoundations/open_clip"
-wandb = "https://wandb.ai/aniketmaurya/herbarium-2022/runs/2dvwrme5"
-tabs = ["Poster", "Blog", "Paper", "Notebook", "Training Logs", "Model Demo"]
+poster_dir = "resources"
+blog = "https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-Mini-Explained-with-Demo--Vmlldzo4NjIxODA"
+github = "https://github.com/borisdayma/dalle-mini"
+wandb = "https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-Mega-Training-Journal--VmlldzoxODMxMDI2"
+tabs = ["Poster", "Blog", "Notebook Viewer", "Training Logs", "Demo: Generate images from a text prompt"]
 
 app = L.LightningApp(
     ResearchApp(
-        poster_dir="resources",
-        paper=paper,
+        poster_dir=poster_dir,
         blog=blog,
         training_log_url=wandb,
-        github=github,
-        notebook_path="resources/Interacting_with_CLIP.ipynb",
-        launch_jupyter_lab=False,
+        # notebook_path="resources/DALL·E_mini_Inference_pipeline.ipynb",
         launch_gradio=True,
         tab_order=tabs,
+        launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
     )
 )
+
 ```
 
 ## FAQs
