@@ -113,7 +113,7 @@ class ResearchApp(L.LightningFlow):
             tabs.append({"name": "Training Logs", "content": self.training_logs})
 
         if self.model_demo:
-            tabs.append({"name": "Model Demo: Unsplash Image Search", "content": self.model_demo.url})
+            tabs.append({"name": "Demo: Generate images from a text prompt", "content": self.model_demo.url})
 
         if self.jupyter_lab:
             tabs.append({"name": "Jupyter Lab", "content": self.jupyter_lab.url})
@@ -136,20 +136,17 @@ class ResearchApp(L.LightningFlow):
 
 if __name__ == "__main__":
     poster_dir = "resources"
-    paper = "https://arxiv.org/pdf/2103.00020"
-    blog = "https://openai.com/blog/clip/"
-    github = "https://github.com/openai/CLIP"
-    wandb = "https://wandb.ai/manan-goel/clip-lightning-image_retrieval/runs/1cedtohj"
-    tabs = ["Blog", "Paper", "Poster", "Notebook Viewer", "Training Logs", "Model Demo: Unsplash Image Search"]
+    blog = "https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-Mini-Explained-with-Demo--Vmlldzo4NjIxODA"
+    github = "https://github.com/borisdayma/dalle-mini"
+    wandb = "https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-Mega-Training-Journal--VmlldzoxODMxMDI2"
+    tabs = ["Poster", "Blog", "Notebook Viewer", "Training Logs", "Demo: Generate images from a text prompt"]
 
     app = L.LightningApp(
         ResearchApp(
             poster_dir=poster_dir,
-            paper=paper,
             blog=blog,
             training_log_url=wandb,
-            github=github,
-            notebook_path="resources/Interacting_with_CLIP.ipynb",
+            # notebook_path="resources/DALL·E_mini_Inference_pipeline.ipynb",
             launch_gradio=True,
             tab_order=tabs,
             launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
