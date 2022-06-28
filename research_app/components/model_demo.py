@@ -4,7 +4,7 @@ import gradio as gr
 from lightning.app.components.serve import ServeGradio
 from rich.logging import RichHandler
 
-from research_app.dalle_mini import predict
+from research_app.dalle_mini import DalleMini
 
 FORMAT = "%(message)s"
 logging.basicConfig(level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()])
@@ -33,11 +33,7 @@ class ModelDemo(ServeGradio):
         super().__init__(parallel=True)
 
     def build_model(self):
-        return None
-        # logger.info("loading model...")
-        # model = DalleMini()
-        # logger.info("built model!")
-        # return model
+        return DalleMini()
 
     def predict(self, query: str) -> str:
-        return predict(query)
+        return self.model.predict(query)
