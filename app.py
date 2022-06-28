@@ -146,7 +146,7 @@ if __name__ == "__main__":
             poster_dir=poster_dir,
             blog=blog,
             training_log_url=wandb,
-            # notebook_path="resources/DALL·E_mini_Inference_pipeline.ipynb",
+            notebook_path="resources/DALL·E_mini_Inference_pipeline.ipynb",
             launch_gradio=True,
             tab_order=tabs,
             launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
