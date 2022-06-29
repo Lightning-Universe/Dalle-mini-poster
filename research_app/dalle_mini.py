@@ -1,25 +1,25 @@
 #!/usr/bin/env python
 # coding: utf-8
+import tensorflow as tf
 
+physical_devices = tf.config.experimental.list_physical_devices("GPU")
+if len(physical_devices) > 0:
+    config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 import random
+from functools import partial
 from typing import List
 
 import jax
 import jax.numpy as jnp
 import numpy as np
+
+# Load models & tokenizer
+from dalle_mini import DalleBart
 from flax.jax_utils import replicate
 from flax.training.common_utils import shard_prng_key
 from loguru import logger
 from PIL import Image
 from tqdm.notebook import trange
-
-# check how many devices are available
-jax.local_device_count()
-
-from functools import partial
-
-# Load models & tokenizer
-from dalle_mini import DalleBart
 from vqgan_jax.modeling_flax_vqgan import VQModel
 
 model, params, vqgan, vqgan_params = [None] * 4
@@ -79,14 +79,17 @@ def concat_images(images: List[Image.Image]) -> Image.Image:
 
 class DalleMini:
     # number of predictions per prompt
-    n_predictions = 4
     # We can customize generation parameters (see https://huggingface.co/blog/how-to-generate)
+    n_predictions = 1
     gen_top_k = None
     gen_top_p = None
     temperature = None
     cond_scale = 10.0
 
     def __init__(self):
+        # check how many devices are available
+        jax.local_device_count()
+
         global model, params, vqgan, vqgan_params, processor
 
         if model is None:
@@ -124,6 +127,7 @@ class DalleMini:
         images = []
         for i in trange(max(self.n_predictions // jax.device_count(), 1)):
             # get a new key
+            KEY = jax.random.PRNGKey(SEED)
             key, subkey = jax.random.split(KEY)
             # generate images
             encoded_images = p_generate(
