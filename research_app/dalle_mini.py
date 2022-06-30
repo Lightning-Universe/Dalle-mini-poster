@@ -1,67 +1,32 @@
 #!/usr/bin/env python
 # coding: utf-8
+import tensorflow as tf
 
-# # DALL·E mini - Inference pipeline
-#
-# *Generate images from a text prompt*
-#
-# <img src="https://github.com/borisdayma/dalle-mini/blob/main/img/logo.png?raw=true" width="200">
-#
-# This notebook illustrates [DALL·E mini](https://github.com/borisdayma/dalle-mini) inference pipeline.
-#
-# Just want to play? Use directly [the app](https://www.craiyon.com/).
-#
-# For more understanding of the model, refer to [the report](https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-mini--Vmlldzo4NjIxODA).
-
-
-# We load required models:
-# * DALL·E mini for text to encoded images
-# * VQGAN for decoding images
-# * CLIP for scoring predictions
-
-# In[1]:
-
+physical_devices = tf.config.experimental.list_physical_devices("GPU")
+if len(physical_devices) > 0:
+    config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 import random
-
-# Model references
-
-# dalle-mega
-# DALLE_MODEL = "dalle-mini/dalle-mini/mega-1-fp16:latest"  # can be wandb artifact or 🤗 Hub or local folder or google bucket
-DALLE_COMMIT_ID = None
-
-# if the notebook crashes too often you can use dalle-mini instead by uncommenting below line
-DALLE_MODEL = "dalle-mini/dalle-mini/mini-1:v0"
-
-# VQGAN model
-VQGAN_REPO = "dalle-mini/vqgan_imagenet_f16_16384"
-VQGAN_COMMIT_ID = "e93a26e7707683d349bf5d5c41c5b0ef69b677a9"
-
-# In[2]:
-
+from functools import partial
+from typing import List
 
 import jax
 import jax.numpy as jnp
-from flax.jax_utils import replicate
-from loguru import logger
-
-# check how many devices are available
-jax.local_device_count()
-
-# In[3]:
-
-model, params, vqgan, vqgan_params = [None] * 4
-
-from functools import partial
+import numpy as np
 
 # Load models & tokenizer
 from dalle_mini import DalleBart
+from flax.jax_utils import replicate
+from flax.training.common_utils import shard_prng_key
+from loguru import logger
+from PIL import Image
+from tqdm.notebook import trange
 from vqgan_jax.modeling_flax_vqgan import VQModel
 
-# Model functions are compiled and parallelized to take advantage of multiple devices.
-
-# In[5]:
-
-
+model, params, vqgan, vqgan_params = [None] * 4
+DALLE_COMMIT_ID = None
+DALLE_MODEL = "dalle-mini/dalle-mini/mini-1:v0"
+VQGAN_REPO = "dalle-mini/vqgan_imagenet_f16_16384"
+VQGAN_COMMIT_ID = "e93a26e7707683d349bf5d5c41c5b0ef69b677a9"
 
 
 # model inference
@@ -85,44 +50,51 @@ def p_decode(indices, params):
 
 
 # Keys are passed to the model on each device to generate unique inference per device.
-
-# In[6]:
-
-
 # create a random key
 SEED = random.randint(0, 2**32 - 1)
 KEY = jax.random.PRNGKey(SEED)
 
 # ## 🖍 Text Prompt
-
 # Our model requires processing prompts.
-
-# In[7]:
-
-
 from dalle_mini import DalleBartProcessor
 
-processor = DalleBartProcessor.from_pretrained(DALLE_MODEL, revision=DALLE_COMMIT_ID)
+processor: DalleBartProcessor = None
 
-# Let's define some text prompts.
 
-import numpy as np
-from flax.training.common_utils import shard_prng_key
-from PIL import Image
-from tqdm.notebook import trange
+def get_concat(im1, im2):
+    # credit: https://note.nkmk.me/en/python-pillow-concat-images/
+    dst = Image.new("RGB", (im1.width, im1.height + im2.height))
+    dst.paste(im1, (0, 0))
+    dst.paste(im2, (0, im1.height))
+    return dst
+
+
+def concat_images(images: List[Image.Image]) -> Image.Image:
+    n = len(images)
+    image = images[0]
+    for i in range(1, n):
+        image = get_concat(image, images[i])
+    return image
 
 
 class DalleMini:
+    # number of predictions per prompt
     # We can customize generation parameters (see https://huggingface.co/blog/how-to-generate)
+    n_predictions = 1
     gen_top_k = None
     gen_top_p = None
     temperature = None
     cond_scale = 10.0
 
     def __init__(self):
-        global model, params, vqgan, vqgan_params
+        # check how many devices are available
+        jax.local_device_count()
+
+        global model, params, vqgan, vqgan_params, processor
 
         if model is None:
+            processor = DalleBartProcessor.from_pretrained(DALLE_MODEL, revision=DALLE_COMMIT_ID)
+
             # Load dalle-mini
             model, params = DalleBart.from_pretrained(
                 DALLE_MODEL, revision=DALLE_COMMIT_ID, dtype=jnp.float16, _do_init=False
@@ -138,9 +110,10 @@ class DalleMini:
 
         logger.info("created model")
 
-    def predict(self, prompt: str):
+    def predict(self, prompt: str) -> Image.Image:
         # Note: we could use the same prompt multiple times for faster inference.
         prompts = [prompt]
+        logger.info(f"Prompts: {prompts}\n")
 
         tokenized_prompts = processor(prompts)
 
@@ -148,16 +121,13 @@ class DalleMini:
         tokenized_prompt = replicate(tokenized_prompts)
 
         # ## 🎨 Generate images
-        #
         # We generate images using dalle-mini model and decode them with the VQGAN.
-        # number of predictions per prompt
-        n_predictions = 1
 
-        print(f"Prompts: {prompts}\n")
         # generate images
         images = []
-        for i in trange(max(n_predictions // jax.device_count(), 1)):
+        for i in trange(max(self.n_predictions // jax.device_count(), 1)):
             # get a new key
+            KEY = jax.random.PRNGKey(SEED)
             key, subkey = jax.random.split(KEY)
             # generate images
             encoded_images = p_generate(
@@ -179,4 +149,4 @@ class DalleMini:
                 images.append(img)
                 print("created image: ", i)
 
-            return images[0]
+        return concat_images(images)

@@ -2,7 +2,7 @@ import logging
 
 import gradio as gr
 from lightning.app.components.serve import ServeGradio
-from lightning_app import CloudCompute
+from lightning_app import BuildConfig, CloudCompute
 from rich.logging import RichHandler
 
 from research_app.dalle_mini import DalleMini
@@ -11,6 +11,14 @@ FORMAT = "%(message)s"
 logging.basicConfig(level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()])
 
 logger = logging.getLogger(__name__)
+
+
+class JAXBuildConfig(BuildConfig):
+    def build_commands(self):
+        return [
+            "pip install -U jax==0.3.8",
+            "pip install -U jaxlib@ https://storage.googleapis.com/jax-releases/cuda11/jaxlib-0.3.7+cuda11.cudnn805-cp37-none-manylinux2014_x86_64.whl",
+        ]
 
 
 class ModelDemo(ServeGradio):
@@ -31,7 +39,10 @@ class ModelDemo(ServeGradio):
     ]
 
     def __init__(self, *args, **kwargs):
-        super().__init__(parallel=True, cloud_compute=CloudCompute("gpu"), *args, **kwargs)
+        super().__init__(
+            parallel=True, cloud_compute=CloudCompute("gpu", idle_timeout=3600),
+            *args, **kwargs
+        )
 
     def build_model(self):
         return DalleMini()
