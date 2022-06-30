@@ -1,3 +1,17 @@
+import os
+
+import tensorflow as tf
+from loguru import logger
+
+os.environ['XLA_PYTHON_CLIENT_PREALLOCATE'] = 'false'
+os.environ['XLA_PYTHON_CLIENT_ALLOCATOR'] = 'platform'
+os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
+
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+logger.info("physical devices:", physical_devices)
+if physical_devices:
+    config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
 import logging
 import os
 from typing import Dict, List, Optional
@@ -46,16 +60,16 @@ class ResearchApp(L.LightningFlow):
     """
 
     def __init__(
-        self,
-        poster_dir: str,
-        paper: Optional[str] = None,
-        blog: Optional[str] = None,
-        github: Optional[str] = None,
-        notebook_path: Optional[str] = None,
-        training_log_url: Optional[str] = None,
-        launch_jupyter_lab: bool = False,
-        launch_gradio: bool = False,
-        tab_order: Optional[List[str]] = None,
+            self,
+            poster_dir: str,
+            paper: Optional[str] = None,
+            blog: Optional[str] = None,
+            github: Optional[str] = None,
+            notebook_path: Optional[str] = None,
+            training_log_url: Optional[str] = None,
+            launch_jupyter_lab: bool = False,
+            launch_gradio: bool = False,
+            tab_order: Optional[List[str]] = None,
     ) -> None:
 
         super().__init__()
