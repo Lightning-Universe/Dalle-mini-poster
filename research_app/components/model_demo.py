@@ -1,4 +1,5 @@
 import logging
+import os
 
 import gradio as gr
 from lightning.app.components.serve import ServeGradio
@@ -12,12 +13,17 @@ logging.basicConfig(level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[Ric
 
 logger = logging.getLogger(__name__)
 
+try:
+    os.system("nvidia-smi")
+except Exception:
+    logger.info("GPU not available!")
+
 
 class JAXBuildConfig(BuildConfig):
     def build_commands(self):
         return [
-            "pip uninstall jax -y",
-            "pip install --upgrade 'jax[cuda]' -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html",
+            "apt-get update && apt-get install -y git python3 python3-pip && rm -rf /var/lib/apt/lists/*",
+            "pip install --upgrade 'jax[cuda]' -f https://storage.googleapis.com/jax-releases/jax_releases.html",
         ]
 
 
@@ -40,8 +46,11 @@ class ModelDemo(ServeGradio):
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            parallel=True, cloud_compute=CloudCompute("gpu", idle_timeout=3600), cloud_build_config=JAXBuildConfig(),
-            *args, **kwargs
+            parallel=True,
+            cloud_compute=CloudCompute("gpu-fast", idle_timeout=3600),
+            cloud_build_config=JAXBuildConfig(image="nvidia/cuda:11.6.2-cudnn8-devel-ubuntu20.04"),
+            *args,
+            **kwargs,
         )
 
     def build_model(self):
