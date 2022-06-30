@@ -40,7 +40,7 @@ class ModelDemo(ServeGradio):
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            parallel=True, cloud_compute=CloudCompute("gpu"), cloud_build_config=JAXBuildConfig(), *args, **kwargs
+            parallel=True, cloud_compute=CloudCompute("gpu-fast", idle_timeout=3600), cloud_build_config=JAXBuildConfig(), *args, **kwargs
         )
 
     def build_model(self):

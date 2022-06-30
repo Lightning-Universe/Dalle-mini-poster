@@ -10,3 +10,4 @@ lightning
 jupyterlab==3.3.3
 loguru
 tensorflow==2.9.1
+ipywidgets==7.7.1
