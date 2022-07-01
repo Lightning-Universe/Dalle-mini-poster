@@ -1,17 +1,12 @@
-import logging
 import os
 
 import gradio as gr
 from lightning.app.components.serve import ServeGradio
 from lightning_app import BuildConfig, CloudCompute
-from rich.logging import RichHandler
+from loguru import logger
 
 from research_app.dalle_mini import DalleMini
 
-FORMAT = "%(message)s"
-logging.basicConfig(level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()])
-
-logger = logging.getLogger(__name__)
 
 try:
     os.system("nvidia-smi")
@@ -22,8 +17,8 @@ except Exception:
 class JAXBuildConfig(BuildConfig):
     def build_commands(self):
         return [
-            "apt-get update && apt-get install -y git python3 python3-pip && rm -rf /var/lib/apt/lists/*",
-            "pip install --upgrade 'jax[cuda]' -f https://storage.googleapis.com/jax-releases/jax_releases.html",
+            "sudo apt-get update && apt-get install -y git python3 python3-pip && rm -rf /var/lib/apt/lists/*",
+            "pip install --upgrade 'jax[cuda]' -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html",
         ]
 
 
