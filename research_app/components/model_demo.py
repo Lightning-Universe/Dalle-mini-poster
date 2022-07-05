@@ -2,9 +2,11 @@
 Thanks to Boris Dayma (https://github.com/borisdayma/dalle-mini) and Brett Kuprel (https://github.com/kuprel/min-dalle)
 for their work on Dalle Mini and Min-Dalle.
 """
+import os
 
 import gradio as gr
 from lightning.app.components.serve import ServeGradio
+from loguru import logger
 from min_dalle import MinDalle
 from PIL import Image
 
@@ -31,10 +33,13 @@ class ModelDemo(ServeGradio):
 
     def build_model(self):
         model = MinDalle(is_mega=False, is_reusable=True, models_root="./pretrained")
+        logger.info("Model loaded...")
         return model
 
     def predict(self, text: str) -> Image.Image:
+        logger.debug(f"Request received, text: {text}")
         image = self.model.generate_image(
-            text=text, seed=-1, grid_size=4, log2_supercondition_factor=3, is_verbose=False
+            text=text, seed=-1, grid_size=1, log2_supercondition_factor=3, is_verbose=False
         )
+        logger.debug("image generated")
         return image
