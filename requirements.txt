@@ -8,3 +8,4 @@ lightning
 jupyterlab==3.3.3
 loguru
 ipywidgets==7.7.1
+min-dalle==0.2.27
