@@ -2,18 +2,11 @@
 Thanks to Boris Dayma (https://github.com/borisdayma/dalle-mini) and Brett Kuprel (https://github.com/kuprel/min-dalle)
 for their work on Dalle Mini and Min-Dalle.
 """
-import logging
 
 import gradio as gr
-from PIL import Image
 from lightning.app.components.serve import ServeGradio
 from min_dalle import MinDalle
-from rich.logging import RichHandler
-
-FORMAT = "%(message)s"
-logging.basicConfig(level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()])
-
-logger = logging.getLogger(__name__)
+from PIL import Image
 
 
 class ModelDemo(ServeGradio):
@@ -34,25 +27,14 @@ class ModelDemo(ServeGradio):
     ]
 
     def __init__(self, *args, **kwargs):
-        super().__init__(
-            parallel=True,
-            *args, **kwargs
-        )
+        super().__init__(parallel=True, *args, **kwargs)
 
     def build_model(self):
-        model = MinDalle(
-            is_mega=False,
-            is_reusable=True,
-            models_root='./pretrained'
-        )
+        model = MinDalle(is_mega=False, is_reusable=True, models_root="./pretrained")
         return model
 
     def predict(self, text: str) -> Image.Image:
         image = self.model.generate_image(
-            text=text,
-            seed=-1,
-            grid_size=4,
-            log2_supercondition_factor=3,
-            is_verbose=False
+            text=text, seed=-1, grid_size=4, log2_supercondition_factor=3, is_verbose=False
         )
         return image
