@@ -2,13 +2,13 @@
 Thanks to Boris Dayma (https://github.com/borisdayma/dalle-mini) and Brett Kuprel (https://github.com/kuprel/min-dalle)
 for their work on Dalle Mini and Min-Dalle.
 """
-import os
 
 import gradio as gr
+from PIL import Image
+from lightning import CloudCompute
 from lightning.app.components.serve import ServeGradio
 from loguru import logger
 from min_dalle import MinDalle
-from PIL import Image
 
 
 class ModelDemo(ServeGradio):
@@ -28,8 +28,8 @@ class ModelDemo(ServeGradio):
         ["sunset over a lake in the mountains"],
     ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(parallel=True, *args, **kwargs)
+    def __init__(self):
+        super().__init__(parallel=True)
 
     def build_model(self):
         model = MinDalle(is_mega=False, is_reusable=True, models_root="./pretrained")
