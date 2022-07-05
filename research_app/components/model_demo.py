@@ -1,24 +1,14 @@
-import logging
+"""
+Thanks to Boris Dayma (https://github.com/borisdayma/dalle-mini) and Brett Kuprel (https://github.com/kuprel/min-dalle)
+for their work on Dalle Mini and Min-Dalle.
+"""
 
 import gradio as gr
+from PIL import Image
+from lightning import CloudCompute
 from lightning.app.components.serve import ServeGradio
-from lightning_app import BuildConfig, CloudCompute
-from rich.logging import RichHandler
-
-from research_app.dalle_mini import DalleMini
-
-FORMAT = "%(message)s"
-logging.basicConfig(level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()])
-
-logger = logging.getLogger(__name__)
-
-
-class JAXBuildConfig(BuildConfig):
-    def build_commands(self):
-        return [
-            "pip install -U jax==0.3.8",
-            "pip install -U jaxlib@ https://storage.googleapis.com/jax-releases/cuda11/jaxlib-0.3.7+cuda11.cudnn805-cp37-none-manylinux2014_x86_64.whl",
-        ]
+from loguru import logger
+from min_dalle import MinDalle
 
 
 class ModelDemo(ServeGradio):
@@ -38,14 +28,18 @@ class ModelDemo(ServeGradio):
         ["sunset over a lake in the mountains"],
     ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(
-            parallel=True, cloud_compute=CloudCompute("gpu", idle_timeout=3600),
-            *args, **kwargs
-        )
+    def __init__(self):
+        super().__init__(parallel=True)
 
     def build_model(self):
-        return DalleMini()
+        model = MinDalle(is_mega=False, is_reusable=True, models_root="./pretrained")
+        logger.info("Model loaded...")
+        return model
 
-    def predict(self, query: str) -> str:
-        return self.model.predict(query)
+    def predict(self, text: str) -> Image.Image:
+        logger.debug(f"Request received, text: {text}")
+        image = self.model.generate_image(
+            text=text, seed=-1, grid_size=1, log2_supercondition_factor=3, is_verbose=False
+        )
+        logger.debug("image generated")
+        return image

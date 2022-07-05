@@ -2,12 +2,10 @@ markdown-poster@ git+https://github.com/Lightning-AI/LAI-markdown-poster-Compone
 mkposters@ git+https://github.com/stanbiryukov/mkposters@522858cfe06d5438094302ff3d5c8b9256a5a4de
 rich==12.4.1
 gradio==2.9.4
-vqgan-jax @ git+https://github.com/patil-suraj/vqgan-jax.git@1be20eee476e5d35c30e4ec3ed12222018af8ce4
-dalle-mini==0.1.1
 nbconvert==6.5.0
 jupyterlite==0.1.0b7
 lightning
 jupyterlab==3.3.3
 loguru
-tensorflow==2.8.2
 ipywidgets==7.7.1
+min-dalle==0.2.27

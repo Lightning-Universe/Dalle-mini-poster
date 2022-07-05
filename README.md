@@ -33,7 +33,7 @@ pip install -e .
 ```
 
 Once you have installed the app, you can goto the `LAI-dalle-mini-poster-App` folder and
-run `lightning run app app.py --cloud --env WANDB_API_KEY={REPLACE YOUR API KEY}` from terminal.
+run `lightning run app app.py --cloud` from terminal.
 This will launch the template app in your default browser with tabs containing research paper, blog, Training
 logs, and Model Demo.
 
