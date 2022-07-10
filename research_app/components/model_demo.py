@@ -30,6 +30,8 @@ class ModelDemo(ServeGradio):
         ["sunset over a lake in the mountains"],
     ]
     OUTPUT_IMAGES = int(os.environ.get("OUTPUT_IMAGES", 1))
+    VERBOSE = False
+
 
     def __init__(self):
         super().__init__(parallel=True, cloud_compute=L.CloudCompute("cpu-medium"))
@@ -43,7 +45,7 @@ class ModelDemo(ServeGradio):
     def predict(self, text: str) -> Image.Image:
         logger.debug(f"Request received, text: {text}")
         image = self.model.generate_image(
-            text=text, seed=-1, grid_size=self.OUTPUT_IMAGES, log2_supercondition_factor=3, is_verbose=False
+            text=text, seed=-1, grid_size=self.OUTPUT_IMAGES, log2_supercondition_factor=3, is_verbose=self.VERBOSE
         )
         logger.debug("image generated")
         return image
