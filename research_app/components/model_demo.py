@@ -9,7 +9,7 @@ from lightning import CloudCompute
 from lightning.app.components.serve import ServeGradio
 from loguru import logger
 from min_dalle import MinDalle
-
+import lightning as L
 
 class ModelDemo(ServeGradio):
     """Serve model with Gradio UI.
@@ -29,7 +29,7 @@ class ModelDemo(ServeGradio):
     ]
 
     def __init__(self):
-        super().__init__(parallel=True)
+        super().__init__(parallel=True, cloud_compute=L.CloudCompute("cpu-medium"))
 
     def build_model(self):
         model = MinDalle(is_mega=False, is_reusable=True, models_root="./pretrained")
