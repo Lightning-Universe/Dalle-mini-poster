@@ -49,8 +49,17 @@ an image encoder that turns raw images into a sequence of numbers with its assoc
 a model that turns a text prompt into an encoded image
 a model that judges the quality of the images generated for better filtering
 
-Kudos to [Boris Dayma](https://twitter.com/borisdayma) for this awesome
+Credits to [Boris Dayma](https://twitter.com/borisdayma) for this awesome
 work [Dalle Mini](https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-mini-Generate-images-from-any-text-prompt--VmlldzoyMDE4NDAy)
+and [Brett Kuprel](https://github.com/kuprel) for [min-dalle](https://github.com/kuprel/min-dalle).
+
+Once you have installed the app, you can goto the `LAI-dalle-mini-poster-App` folder and
+run `lightning run app app.py --cloud` from terminal.
+This will launch the template app in your default browser with tabs containing research paper, blog, Training
+logs, and Model Demo.
+
+You can control the number of generated images using `OUTPUT_IMAGES` environment variable. To generate 4 images you can
+do `lightning run app app.py --env OUTPUT_IMAGES=4 --cloud`
 
 --split--
 

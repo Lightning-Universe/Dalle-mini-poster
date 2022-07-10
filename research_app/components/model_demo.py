@@ -4,12 +4,14 @@ for their work on Dalle Mini and Min-Dalle.
 """
 
 import gradio as gr
+import lightning as L
 from PIL import Image
-from lightning import CloudCompute
 from lightning.app.components.serve import ServeGradio
 from loguru import logger
 from min_dalle import MinDalle
-import lightning as L
+import os
+
+NUM_OUTPUT_IMAGES = os.environ.get("OUTPUT_IMAGES", 1)
 
 class ModelDemo(ServeGradio):
     """Serve model with Gradio UI.
@@ -39,7 +41,7 @@ class ModelDemo(ServeGradio):
     def predict(self, text: str) -> Image.Image:
         logger.debug(f"Request received, text: {text}")
         image = self.model.generate_image(
-            text=text, seed=-1, grid_size=1, log2_supercondition_factor=3, is_verbose=False
+            text=text, seed=-1, grid_size=NUM_OUTPUT_IMAGES, log2_supercondition_factor=3, is_verbose=False
         )
         logger.debug("image generated")
         return image
