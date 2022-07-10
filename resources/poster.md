@@ -53,6 +53,8 @@ Credits to [Boris Dayma](https://twitter.com/borisdayma) for this awesome
 work [Dalle Mini](https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-mini-Generate-images-from-any-text-prompt--VmlldzoyMDE4NDAy)
 and [Brett Kuprel](https://github.com/kuprel) for [min-dalle](https://github.com/kuprel/min-dalle).
 
+### Running the App
+
 Once you have installed the app, you can goto the `LAI-dalle-mini-poster-App` folder and
 run `lightning run app app.py --cloud` from terminal.
 This will launch the template app in your default browser with tabs containing research paper, blog, Training
