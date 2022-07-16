@@ -13,7 +13,7 @@
     </div>
     <div style="display: flex; align-items: center;">
         <img style="height: 20pt; width: 20pt; margin: 5pt;" src="icons/fontawesome/brands/twitter.svg">
-        <div style="font-size: 0.9rem;"><a href="https://twitter.com/borisdayma">@borisdayma</a></div>
+        <div style="font-size: 0.9rem;"><a href="https://mobile.twitter.com/craiyonai">@craiyonAI</a></div>
     </div>
 </div>
 
