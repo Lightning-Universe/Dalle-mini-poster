@@ -12,7 +12,7 @@ manually install the app as mentioned below.
 
 ### Installation
 
-#### With Lightning CLI
+#### With Lightning CLI (This method is not activated yet)
 
 `lightning install app lightning/dalle_mini`
 
