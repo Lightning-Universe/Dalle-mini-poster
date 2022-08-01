@@ -9,11 +9,11 @@ It showcases a notebook, a blog, and a model demo where you generate images from
 
 #### With Lightning CLI (This method is not activated yet)
 
-`lightning install app lightning/dalle_mini`
+`lightning install app lightning/dalle_mini_poster`
 
 #### From GitHub
 
-You can clone the forked app repo and follow the steps below to install the app.
+You can clone the app repo and follow the steps below to install the app.
 
 ```
 git clone https://github.com/lightning-AI/LAI-dalle-mini-poster-App.git
@@ -24,7 +24,7 @@ pip install -e .
 
 Once you have installed the app, you can goto the `LAI-dalle-mini-poster-App` folder and
 run `lightning run app app.py --cloud` from terminal.
-This will launch the template app in your default browser with tabs containing research paper, blog, Training
+This will launch the Dalle app in your default browser with tabs containing blog, Training
 logs, and Model Demo.
 
 You can control the number of generated images using `OUTPUT_IMAGES` environment variable. To generate 4 images you can
