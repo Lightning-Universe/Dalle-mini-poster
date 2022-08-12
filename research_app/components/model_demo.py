@@ -52,7 +52,7 @@ class ModelDemo(ServeGradio):
         logger.debug(f"Request received, text: {text} | grid_size:{grid_size}")
         with torch.inference_mode():
             image = self.model.generate_image(
-                text=text, seed=-1, grid_size=grid_size, log2_supercondition_factor=1, is_verbose=self.VERBOSE
+                text=text, seed=-1, grid_size=grid_size, log2_supercondition_factor=3, is_verbose=self.VERBOSE
             )
         logger.debug("image generated")
         return image
