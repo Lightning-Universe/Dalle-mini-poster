@@ -1,17 +1,14 @@
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Lightning et al."
-__author_email__ = "aniket@grid.ai"
+__author_email__ = "aniket@lightning.ai"
 __license__ = "Apache 2.0"
 __copyright__ = f"Copyright (c) 2021-2022, {__author__}."
-__homepage__ = "https://github.com/PyTorchLightning/lightning-template-research-app"
-__docs__ = (
-    "Share your paper 'bundled' with the arxiv link, poster, live jupyter notebook,"
-    "interactive demo to try the model and more!"
-)
+__homepage__ = "https://github.com/Lightning-AI/LAI-dalle-mini-poster-App"
+__docs__ = "🥑 Dalle Mini Poster App | Generate Images from Text Prompt ⚡️"
+
 __long_doc__ = """
-Use this app to share your research paper results. This app lets you connect a blogpost, arxiv paper, and jupyter
-notebook and even have an interactive demo for people to play with the model. This app also allows industry
-practitioners to productionize your work by adding inference components (sub 1ms inference time), data pipelines, etc.
+This app is a research poster demo of [min-dalle](https://github.com/kuprel/min-dalle) (PyTorch port of Dalle-Mini).
+It showcases a notebook, a blog, and a model demo where you generate images from text prompts.
 """
 
 __all__ = [
