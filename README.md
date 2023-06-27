@@ -30,7 +30,6 @@ logs, and Model Demo.
 You can control the number of generated images using `OUTPUT_IMAGES` environment variable. To generate 4 images you can
 do `lightning run app app.py --env OUTPUT_IMAGES=4 --cloud`
 
-
 ### Example
 
 ```python
@@ -41,7 +40,13 @@ poster_dir = "resources"
 blog = "https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-Mini-Explained-with-Demo--Vmlldzo4NjIxODA"
 github = "https://github.com/borisdayma/dalle-mini"
 wandb = "https://wandb.ai/dalle-mini/dalle-mini/reports/DALL-E-Mega-Training-Journal--VmlldzoxODMxMDI2"
-tabs = ["Poster", "Blog", "Notebook Viewer", "Training Logs", "Demo: Generate images from a text prompt"]
+tabs = [
+    "Poster",
+    "Blog",
+    "Notebook Viewer",
+    "Training Logs",
+    "Demo: Generate images from a text prompt",
+]
 
 app = L.LightningApp(
     ResearchApp(
@@ -54,7 +59,6 @@ app = L.LightningApp(
         launch_jupyter_lab=False,  # don't launch for public app, can expose to security vulnerability
     )
 )
-
 ```
 
 ## FAQs
